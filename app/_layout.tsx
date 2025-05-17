@@ -13,9 +13,14 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    extra: require("../assets/fonts/Lato-Black.ttf"),
+    bold: require("../assets/fonts/Lato-Bold.ttf"),
+    regular: require("../assets/fonts/Lato-Regular.ttf"),
+    light: require("../assets/fonts/Lato-Light.ttf"),
+    thin: require("../assets/fonts/Lato-Thin.ttf"),
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // null = loading
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -54,7 +59,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
-        {!isLoggedIn ? (
+        {isLoggedIn ? (
           <Stack.Screen name="(tabs)" />
         ) : (
           <Stack.Screen name="(auth)" />
