@@ -22,7 +22,7 @@ const Login = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    console.log(email, password)
+  router.push("/(tabs)")
   }
 
 

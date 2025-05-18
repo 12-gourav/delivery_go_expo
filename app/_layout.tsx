@@ -1,18 +1,22 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import 'react-native-reanimated';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import "react-native-reanimated";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     extra: require("../assets/fonts/Lato-Black.ttf"),
     bold: require("../assets/fonts/Lato-Bold.ttf"),
     regular: require("../assets/fonts/Lato-Regular.ttf"),
@@ -21,18 +25,24 @@ export default function RootLayout() {
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [onBoarding, setOnBoarding] = useState<boolean>(false);
+
+  const checkOnboarding = async () => {
+    const onboarding = await AsyncStorage.getItem("onboarding");
+    setOnBoarding(onboarding === "true");
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
+        const token = await AsyncStorage.getItem("token");
         if (!token) {
           setIsLoggedIn(false);
           return;
         }
 
-        const res = await fetch('https://your-api.com/api/verify', {
-          method: 'GET',
+        const res = await fetch("https://your-api.com/api/verify", {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -40,7 +50,7 @@ export default function RootLayout() {
 
         setIsLoggedIn(res.ok);
       } catch (error) {
-        console.error('Auth error:', error);
+        console.error("Auth error:", error);
         setIsLoggedIn(false);
       }
     };
@@ -48,18 +58,24 @@ export default function RootLayout() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    checkOnboarding();
+  }, []);
+
   if (!loaded || isLoggedIn === null) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
       </View>
     );
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
-        {isLoggedIn ? (
+        {onBoarding ? (
+          <Stack.Screen name="(onboarding)" />
+        ) : isLoggedIn ? (
           <Stack.Screen name="(tabs)" />
         ) : (
           <Stack.Screen name="(auth)" />
