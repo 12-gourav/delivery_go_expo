@@ -9,7 +9,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 export default function TabLayout() {
   return (
     <Tabs
-     initialRouteName="index" 
+     initialRouteName="payments" 
       screenOptions={{
         tabBarActiveTintColor: "#FF0059",
         tabBarInactiveTintColor: "#fff",
