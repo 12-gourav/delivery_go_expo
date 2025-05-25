@@ -1,26 +1,10 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const pink = "#FF0059"
+const primary = "#002143"
 
-export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
-};
+
+const InfoText = `Please share this OTP only after you have received all items from the shop. Once your parcel is complete and in your hands, then provide the OTP to confirm delivery`
+const InfoText2 ="Please only complete the delivery after the customer has received the parcel. Ask the customer to share their delivery OTP after they’ve received all the items. ✅ Once you get the correct OTP from the customer, enter it below to complete the delivery."
+
+
+export { pink, primary,InfoText,InfoText2 }

@@ -1,45 +1,90 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import 'react-native-gesture-handler'
+import "react-native-reanimated"
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
+     initialRouteName="home" 
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: "#FF0059",
+        tabBarInactiveTintColor: "#fff",
+        tabBarStyle: {
+          backgroundColor: "#002143",
+          height: 90,
+        },
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+      }}
+    
+    >
       <Tabs.Screen
-        name="index"
+        name="upcoming"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Upcoming",
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name="shopping-outline"
+              size={18}
+              color={color}
+              focused={focused}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="order"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Orders",
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name="shopping-search"
+              size={18}
+              color={color}
+              focused={focused}
+            />
+          ),
         }}
       />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "Dashboard",
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol name="house.fill" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="payments"
+        options={{
+          title: "Payments",
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialIcons
+              name="payment"
+              size={18}
+              color={color}
+              focused={focused}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name="user" size={18} color={color} focused={focused} />
+          ),
+        }}
+      />
+      
     </Tabs>
   );
 }
