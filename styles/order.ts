@@ -167,7 +167,7 @@ const OrderStyle = StyleSheet.create({
         borderColor: "gray",
         left: 25,
         zIndex: 0,
-        top: 10,
+        top: 20,
         borderStyle: "dashed"
     },
     last: {

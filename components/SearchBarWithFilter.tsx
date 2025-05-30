@@ -24,7 +24,7 @@ const SearchBarWithFilter = ({
           placeholder="Search by product or address"
           style={OrderStyle.barInput}
         />
-        <TouchableOpacity style={OrderStyle.searchbtn} onPress={handleSearch}>
+        <TouchableOpacity style={OrderStyle.searchbtn} onPress={()=>handleSearch()}>
           <Feather name="search" size={24} color="#fff" />
         </TouchableOpacity>
       </View>

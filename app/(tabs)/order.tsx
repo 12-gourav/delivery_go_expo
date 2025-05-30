@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OrderStyle from "@/styles/order";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -10,8 +10,39 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import ProductImage from "../../assets/images/p1.jpg";
+import SearchBarWithFilter from "@/components/SearchBarWithFilter";
+import FilterModal from "@/components/modals/FilterModal";
+import Toast from "react-native-toast-message";
+
+const StatusData = ["complete", "rto", "cancel", "progress", "pending"];
 
 const order = () => {
+  const [query, setQuery] = useState("");
+  const [isVisible, setIsvisible] = useState(false);
+  const [filter, setFilter] = useState({ start: "", end: "", status: "" });
+  const [start, setStart] = useState(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now;
+  });
+
+  const [end, setEnd] = useState(() => {
+    const now = new Date();
+    now.setHours(23, 59, 59, 999);
+    return now;
+  });
+
+  const [status, setStatus] = useState("");
+
+  const handleSearch = () => {
+    console.log("kkkk")
+    Toast.show({
+      type: "success",
+      text1: "Hello",
+      text2: "This is some something 👋",
+    });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>
       <View style={OrderStyle.container}>
@@ -19,6 +50,13 @@ const order = () => {
         <Text style={OrderStyle.dis}>
           View and manage all your past and upcoming orders in one place.
         </Text>
+        <SearchBarWithFilter
+          query={query}
+          setQuery={setQuery}
+          setIsvisible={setIsvisible}
+          handleSearch={handleSearch}
+        />
+
         <View style={{ flexGrow: 1, marginTop: 20, marginBottom: 10 }}>
           <FlatList
             data={["complete", "cancel", "rto", "complete"]}
@@ -28,6 +66,22 @@ const order = () => {
             contentContainerStyle={{ flexGrow: 1 }}
           />
         </View>
+
+        {isVisible && (
+          <FilterModal
+            isVisible={isVisible}
+            setIsVisible={setIsvisible}
+            start={start}
+            setStart={setStart}
+            end={end}
+            setEnd={setEnd}
+            status={status}
+            setStatus={setStatus}
+            setFilter={setFilter}
+            filter={filter}
+            data={StatusData}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -105,7 +159,7 @@ export const TrackingCard: React.FC<any> = ({ item }) => {
         </View>
         <TouchableOpacity
           style={{ ...OrderStyle.wrapText, gap: 5 }}
-          onPress={() => router.push("/(external)/:dsadsadsad")}
+          onPress={() => router.replace("/(external)/:dsadsadsad")}
         >
           <Text style={OrderStyle.ptext}>See More</Text>
           <AntDesign name="arrowright" size={14} color={primary} />

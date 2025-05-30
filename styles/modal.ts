@@ -65,9 +65,10 @@ const ModalStyle = StyleSheet.create({
     tabs: {
         width: "100%",
         display: "flex",
+        flexWrap: "wrap",
         flexDirection: "row",
         gap: 10,
-        marginTop:5
+        marginTop: 5
     },
     tabItem: {
         backgroundColor: "#fff",
@@ -77,11 +78,13 @@ const ModalStyle = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 20,
-        height:40,
-        borderWidth:1,
-        borderColor:"#e4e4e4"
+        height: 40,
+        borderWidth: 1,
+        borderColor: "#e4e4e4",
+
+
     },
-        tabItemActive: {
+    tabItemActive: {
         backgroundColor: primary,
         paddingHorizontal: 22,
         paddingVertical: 10,
@@ -89,15 +92,17 @@ const ModalStyle = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 20,
-        height:40,
+        height: 40,
     },
-        tabItemText: {
+    tabItemText: {
         color: "#474747",
         fontFamily: 'regular',
         fontWeight: '500',
         fontSize: 14,
         textAlignVertical: 'center',
-        includeFontPadding: false
+        includeFontPadding: false,
+        textTransform: "capitalize",
+        width: "100%",
     },
     tabItemTextActive: {
         color: "#fff",
@@ -105,11 +110,13 @@ const ModalStyle = StyleSheet.create({
         fontWeight: '600',
         fontSize: 14,
         textAlignVertical: 'center',
-        includeFontPadding: false
+        includeFontPadding: false,
+        textTransform: "capitalize",
+        width: "100%",
     },
     clear: {
         width: "100%",
-        height:50,
+        height: 50,
         borderWidth: 1,
         borderColor: "#e4e4e4",
         borderRadius: 5,

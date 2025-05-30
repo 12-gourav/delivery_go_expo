@@ -23,6 +23,7 @@ const FilterModal = ({
   setStatus,
   setFilter,
   filter,
+  data,
 }) => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
@@ -36,8 +37,6 @@ const FilterModal = ({
     setStatus("");
     setFilter({ start: "", end: "", status: "" });
   };
-
-  console.log(filter);
 
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -69,48 +68,30 @@ const FilterModal = ({
             <View style={ModalStyle.form}>
               <Text style={ModalStyle.formText}>Payment Status</Text>
               <View style={ModalStyle.tabs}>
-                <TouchableOpacity
-                  style={
-                    status === "paid"
-                      ? ModalStyle.tabItemActive
-                      : ModalStyle.tabItem
-                  }
-                  onPress={() => {
-                    setStatus(status === "paid" ? "" : "paid");
-                    setFilter({ ...filter, status: status });
-                  }}
-                >
-                  <Text
+                {data?.map((z) => (
+                  <TouchableOpacity
+                  key={z}
                     style={
-                      status === "paid"
-                        ? ModalStyle.tabItemTextActive
-                        : ModalStyle.tabItemText
+                      status === z
+                        ? ModalStyle.tabItemActive
+                        : ModalStyle.tabItem
                     }
+                    onPress={() => {
+                      setStatus(status === z ? "" : z);
+                      setFilter({ ...filter, status: status });
+                    }}
                   >
-                    Paid
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={
-                    status === "unpaid"
-                      ? ModalStyle.tabItemActive
-                      : ModalStyle.tabItem
-                  }
-                  onPress={() => {
-                    setStatus(status === "unpaid" ? "" : "unpaid");
-                    setFilter({ ...filter, status: status });
-                  }}
-                >
-                  <Text
-                    style={
-                      status === "unpaid"
-                        ? ModalStyle.tabItemTextActive
-                        : ModalStyle.tabItemText
-                    }
-                  >
-                    Unpaid
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={
+                        status === z
+                          ? ModalStyle.tabItemTextActive
+                          : ModalStyle.tabItemText
+                      }
+                    >
+                      {z}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
               </View>
             </View>
             <TouchableOpacity style={ModalStyle.clear} onPress={handleReset}>

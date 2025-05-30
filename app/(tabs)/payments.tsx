@@ -19,6 +19,10 @@ import FilterModal from "../../components/modals/FilterModal";
 import SearchBarWithFilter from "@/components/SearchBarWithFilter";
 import p1 from "../../assets/images/p1.jpg"
 
+
+
+const StatusData = ['paid','unpaid']
+
 const payments = () => {
   const [isVisible, setIsvisible] = useState<boolean>(false);
   const [filter, setFilter] = useState({ start: "", end: "", status: "" });
@@ -54,7 +58,7 @@ const payments = () => {
         />
 
         <FlatList
-          data={["complete", "cancel", "rto", "complete"]}
+          data={["complete", "cancel", "complete", "complete"]}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => <TrackingCard item={item} />}
           showsVerticalScrollIndicator={false}
@@ -73,6 +77,7 @@ const payments = () => {
             setStatus={setStatus}
             setFilter={setFilter}
             filter={filter}
+            data={StatusData}
           />
         )}
       </View>

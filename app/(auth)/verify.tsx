@@ -1,5 +1,10 @@
-import { Link, usePathname, useRouter } from "expo-router";
-import React, { useState } from "react";
+import {
+  Link,
+  useLocalSearchParams,
+  usePathname,
+  useRouter,
+} from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Text,
@@ -7,6 +12,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthStyles from "@/styles/auth";
@@ -14,23 +20,50 @@ import { Image } from "expo-image";
 import OTPInput from "@/components/OTPInput";
 import lockImage from "../../assets/images/lock.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
+import { VerifyUserAPI } from "../../api/auth-api";
+import Toast from "react-native-toast-message";
 
 const Verify = () => {
-  const [email, setEmail] = useState("test@gmail.com");
-  const [password, setPassword] = useState("");
-  const [otp,setOtp] = useState("")
+  const { emailText } = useLocalSearchParams();
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const path = usePathname();
   const router = useRouter();
 
-  const handleLogin = async () => {
-    console.log(email, password);
+  const handleVerify = async () => {
+    try {
+      if (otp?.length !== 6) {
+        return Toast.show({
+          type: "error",
+          text1: "OTP is required",
+          text2: "Please enter your OTP number",
+        });
+      }
+
+
+      setLoading(true);
+
+      const result = await VerifyUserAPI(emailText, otp);
+      if (result?.data?.data) {
+        Toast.show({
+          type: "success",
+          text1: "Account Registered Successfully",
+          text2:
+            "Your account is under verification. You will receive an email once it is activated. You can then log in using your registered credentials.",
+        });
+        router.replace("/(auth)/login");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-       <KeyboardAwareScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         enableOnAndroid={true}
         keyboardShouldPersistTaps="handled"
@@ -54,7 +87,7 @@ const Verify = () => {
           >
             <Image
               source={lockImage}
-              style={{ width: 150, height: 150, }}
+              style={{ width: 150, height: 150 }}
               contentFit="contain"
             />
           </View>
@@ -64,24 +97,27 @@ const Verify = () => {
             <TextInput
               style={AuthStyles.input}
               placeholder="Enter your register email address"
-              value={email}
+              value={String(emailText)}
               editable={false}
             />
           </View>
 
-
           <View style={AuthStyles.formGroup}>
             <Text style={AuthStyles.label}>OTP</Text>
-           <OTPInput setOtp={setOtp}/>
+            <OTPInput setOtp={setOtp} />
           </View>
 
-          <Link href={"/(auth)/forgot"} style={AuthStyles.link}>
-            Back to forgot page?
+          <Link href={"/(auth)/register"} style={AuthStyles.link}>
+            Back to register page?
           </Link>
 
-          <TouchableOpacity onPress={handleLogin}>
+          <TouchableOpacity onPress={handleVerify} disabled={loading}>
             <View style={AuthStyles.login}>
-              <Text style={AuthStyles.textActive}>Submit</Text>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={AuthStyles.textActive}>Submit</Text>
+              )}
             </View>
           </TouchableOpacity>
         </View>

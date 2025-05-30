@@ -11,10 +11,12 @@ import Zocial from "@expo/vector-icons/Zocial";
 
 import { Image } from "expo-image";
 import DashboardChart from "@/components/DashboardChart";
-import p1 from "../../assets/images/p1.jpg"
-const home = () => {
+import p1 from "../../assets/images/p1.jpg";
+import { ErrorBoundary } from "@/components/ErrorBoundry";
+const Home = () => {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <ErrorBoundary>
+  <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={HomeStyles.container}>
           <View style={HomeStyles.heading}>
@@ -87,7 +89,6 @@ const home = () => {
                     width: 50,
                     height: 50,
                     borderRadius: 5,
-     
                   }}
                   contentFit="cover"
                 />
@@ -113,14 +114,21 @@ const home = () => {
               </View>
             ))}
           </View>
-          <View style={HomeStyles.graph}>
-            <Text style={{...HomeStyles.overview,marginTop:0,marginBottom:10}}>Overall Order Progress</Text>
-            <DashboardChart/>
-          </View>
+          {/* <View style={HomeStyles.graph}>
+            <Text
+              style={{ ...HomeStyles.overview, marginTop: 0, marginBottom: 10 }}
+            >
+              Overall Order Progress
+            </Text>
+            <DashboardChart />
+          </View> */}
         </View>
       </ScrollView>
     </SafeAreaView>
+
+    </ErrorBoundary>
+  
   );
 };
 
-export default home;
+export default Home;

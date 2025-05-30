@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthStyles from "@/styles/auth";
@@ -14,7 +15,8 @@ import * as ImagePicker from "expo-image-picker";
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
+import { RegisterAPI } from "../../api/auth-api";
+import Toast from "react-native-toast-message";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -23,6 +25,7 @@ const Register = () => {
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -69,6 +72,7 @@ const Register = () => {
           [{ text: "OK" }]
         );
       }
+      setLoading(true);
 
       const myForm = new FormData();
 
@@ -82,8 +86,24 @@ const Register = () => {
         name: `photo.jpg`,
         type: "image/jpeg",
       } as any);
+
+      const result = await RegisterAPI(myForm);
+      if (result?.data?.data) {
+        Toast.show({
+          type: "success",
+          text1: "OTP Sent to Email",
+          text2:
+            "Check your inbox to complete account creation. If you don’t see it, check your spam folder.",
+        });
+        router.push({
+          pathname: "/(auth)/verify",
+          params: { emailText: email, from: "register" },
+        });
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,7 +133,7 @@ const Register = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-       <KeyboardAwareScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         enableOnAndroid={true}
         keyboardShouldPersistTaps="handled"
@@ -181,11 +201,9 @@ const Register = () => {
             <Text style={AuthStyles.label}>Address</Text>
             <TextInput
               style={AuthStyles.input}
-              secureTextEntry
               placeholder="Enter your address"
               onChangeText={(e) => setAddress(e)}
               value={address}
-              selection={{ start: 0 }}
             />
           </View>
           <View style={AuthStyles.formGroup}>
@@ -217,9 +235,11 @@ const Register = () => {
             Already have an account?{" "}
             <Text style={{ fontWeight: "600", fontFamily: "bold" }}>Login</Text>
           </Link>
-          <TouchableOpacity onPress={handleRegister}>
+          <TouchableOpacity onPress={handleRegister} disabled={loading}>
             <View style={AuthStyles.login}>
-              <Text style={AuthStyles.textActive}>Register</Text>
+              <Text style={AuthStyles.textActive}>
+                {loading ? <ActivityIndicator /> : "Register"}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>

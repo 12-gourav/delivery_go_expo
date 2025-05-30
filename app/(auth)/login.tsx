@@ -1,5 +1,5 @@
 import { Link, usePathname, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Text,
@@ -7,23 +7,66 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthStyles from "@/styles/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LoginAPI } from "../../api/auth-api";
+import { useDispatch, useSelector } from "react-redux";
+import Toast from "react-native-toast-message";
 
 const Login = () => {
-
+  const { isValid } = useSelector((state: any) => state.user);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const router = useRouter();
 
   const handleLogin = async () => {
-  router.replace("/(tabs)/home")
-  }
+    if (!email.trim()) {
+      return Toast.show({
+        type: "error",
+        text1: "Email is required",
+        text2: "Please enter your email address",
+      });
+    }
+    if (!password.trim()) {
+      return Toast.show({
+        type: "error",
+        text1: "Password is required",
+        text2: "Please enter your password",
+      });
+    }
 
+    try {
+      setLoading(true);
+      const result = await LoginAPI(email, password);
 
+      if (result?.data?.data) {
+        await AsyncStorage.setItem("token", result?.data?.data?.token);
+        dispatch({ type: "login", payload: result?.data?.data });
+        Toast.show({
+          type: "success",
+          text1: "Login Successful",
+          text2: "Welcome back!",
+        });
+        router.replace("/(tabs)/home");
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isValid) {
+      router.replace("/(tabs)/home");
+    }
+  }, [isValid]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -38,37 +81,19 @@ const Login = () => {
           <Text style={AuthStyles.brand2}>Your packages. Our promise.</Text>
           <View style={AuthStyles.toggleWrap}>
             <TouchableOpacity
-              style={
-
-                AuthStyles.toggleWrapLeftActive
-              }
+              style={AuthStyles.toggleWrapLeftActive}
               onPress={() => router.push("/(auth)/login")}
             >
               <View>
-                <Text
-                  style={
-
-                    AuthStyles.textActive
-                  }
-                >
-                  Login
-                </Text>
+                <Text style={AuthStyles.textActive}>Login</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={
-                AuthStyles.toggleWrapRight
-              }
+              style={AuthStyles.toggleWrapRight}
               onPress={() => router.push("/(auth)/register")}
             >
               <View>
-                <Text
-                  style={
-                    AuthStyles.text
-                  }
-                >
-                  Register
-                </Text>
+                <Text style={AuthStyles.text}>Register</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -102,9 +127,13 @@ const Login = () => {
               Create Account
             </Text>
           </Link>
-          <TouchableOpacity onPress={handleLogin}>
+          <TouchableOpacity onPress={handleLogin} disabled={loading}>
             <View style={AuthStyles.login}>
-              <Text style={AuthStyles.textActive}>Login</Text>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={AuthStyles.textActive}>Login</Text>
+              )}
             </View>
           </TouchableOpacity>
         </View>

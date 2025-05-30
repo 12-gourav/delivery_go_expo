@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UpcomingStyle from "@/styles/upcoming";
@@ -8,9 +8,12 @@ import { pink, primary } from "@/constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import p1 from "../../assets/images/p1.jpg"
+import p1 from "../../assets/images/p1.jpg";
+import { useRouter } from "expo-router";
+import OrderStyle from "@/styles/order";
 
 const upcoming = () => {
+  const router = useRouter();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>
       <View style={UpcomingStyle.container}>
@@ -22,9 +25,14 @@ const upcoming = () => {
           <FlatList
             data={[1, 2, 3, 4, 5]}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => <TrackingCard item={item} />}
+            renderItem={({ item }) => (
+              <TrackingCard
+                item={item}
+                handlepush={() => router.replace("/(external)/:dsadsadsad")}
+              />
+            )}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{flexGrow:1}}
+            contentContainerStyle={{ flexGrow: 1 }}
           />
         </View>
       </View>
@@ -34,7 +42,7 @@ const upcoming = () => {
 
 export default upcoming;
 
-export const TrackingCard: React.FC<any> = ({ item }) => {
+export const TrackingCard: React.FC<any> = ({ item,handlepush }) => {
   return (
     <View style={UpcomingStyle.card}>
       <View style={UpcomingStyle.top}>
@@ -44,11 +52,7 @@ export const TrackingCard: React.FC<any> = ({ item }) => {
           </Text>
           <Text style={UpcomingStyle.date}>12 Jun Wed 12:00 AM</Text>
         </View>
-        <Image
-          style={UpcomingStyle.img}
-          source={p1}
-          contentFit="cover"
-        />
+        <Image style={UpcomingStyle.img} source={p1} contentFit="cover" />
       </View>
       <View style={UpcomingStyle.address}>
         <View style={UpcomingStyle.pin}>
@@ -76,10 +80,38 @@ export const TrackingCard: React.FC<any> = ({ item }) => {
           <MaterialIcons name="currency-rupee" size={15} color={primary} />
           <Text style={UpcomingStyle.ptext}>200</Text>
         </View>
-        <View style={{ ...UpcomingStyle.wrapText, gap: 5 }}>
+           <View
+          style={
+            item === "complete"
+              ? OrderStyle.complete
+              : item === "cancel"
+              ? OrderStyle.cancel
+              : OrderStyle.rto
+          }
+        >
+          <Text
+            style={
+              item === "complete"
+                ? OrderStyle.completeText
+                : item === "cancel"
+                ? OrderStyle.cancelText
+                : OrderStyle.rtoText
+            }
+          >
+            {item === "complete"
+              ? "Complete"
+              : item === "cancel"
+              ? "Cancel"
+              : "RTO"}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{ ...UpcomingStyle.wrapText, gap: 5 }}
+          onPress={() => handlepush()}
+        >
           <Text style={UpcomingStyle.ptext}>See More</Text>
           <AntDesign name="arrowright" size={14} color={primary} />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
