@@ -26,7 +26,7 @@ export const upcomingOrdersAPI = async (token) => {
   }
 };
 
-export const OrdersAPI = async (current, date, query,status, token) => {
+export const OrdersAPI = async (current, date, query, status, token) => {
   try {
     return await axios.get(url + "/get/agent/orders", {
       params: {
@@ -34,7 +34,7 @@ export const OrdersAPI = async (current, date, query,status, token) => {
         date: date,
         query,
         limit: 10,
-        status
+        status,
       },
       headers: {
         token,
@@ -82,13 +82,21 @@ export const orderUpdateAPI = async (id, otp, reason, flag, token) => {
   }
 };
 
-export const GetPaymentsDetails = async (current, date, token) => {
+export const GetPaymentsDetails = async (
+  current,
+  date,
+  query,
+  status,
+  token
+) => {
   try {
-    return await axios.get(url + "/order/detail", {
+    return await axios.get(url + "/agent/payments", {
       params: {
         page: current,
         limit: 10,
         date: date,
+        query,
+        status,
       },
       headers: {
         token,

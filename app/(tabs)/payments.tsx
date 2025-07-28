@@ -6,7 +6,7 @@ import {
   Button,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OrderStyle from "@/styles/order";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -17,16 +17,27 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Image } from "expo-image";
 import FilterModal from "../../components/modals/FilterModal";
 import SearchBarWithFilter from "@/components/SearchBarWithFilter";
-import p1 from "../../assets/images/p1.jpg"
+import p1 from "../../assets/images/p1.jpg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GetPaymentsDetails } from "@/api/api";
+import { useRouter } from "expo-router";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Entypo from "@expo/vector-icons/Entypo";
+import { useDispatch } from "react-redux";
+import Nodata from "@/components/Nodata";
 
-
-
-const StatusData = ['paid','unpaid']
+const StatusData = ["paid", "unpaid"];
 
 const payments = () => {
-  const [isVisible, setIsvisible] = useState<boolean>(false);
-  const [filter, setFilter] = useState({ start: "", end: "", status: "" });
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState("");
+  const [isVisible, setIsvisible] = useState(false);
+  const [filter, setFilter] = useState({
+    start: "",
+    end: "",
+    status: "",
+    on: false,
+  });
   const [start, setStart] = useState(() => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -40,8 +51,58 @@ const payments = () => {
   });
 
   const [status, setStatus] = useState("");
+  const [state, setState] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
+  const [current, setCurrent] = useState(1);
+  const [search, setSearch] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [on, setOn] = useState(false);
 
-  const handleSearch = () => {};
+  const handleSearch = () => {
+    setSearch(!search);
+  };
+
+  const fetchRecords = useCallback(async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem("token");
+      let date: any = [];
+      if (filter.start !== "" && filter.end !== "") {
+        date = [start, end];
+      }
+      const result = await GetPaymentsDetails(
+        current,
+        date,
+        query,
+        status,
+        token
+      );
+      if (result?.data?.data) {
+        const newData = result?.data?.data || [];
+        setHasMore(newData.length === 10);
+        if (current === 1) {
+          setState(newData);
+        } else {
+          const temp = [...state, ...newData];
+          setState(temp);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [search, current]);
+
+  useEffect(() => {
+    fetchRecords();
+  }, [fetchRecords]);
+
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      setCurrent((prev) => prev + 1);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>
@@ -57,14 +118,26 @@ const payments = () => {
           handleSearch={handleSearch}
         />
 
-        <FlatList
-          data={["complete", "cancel", "complete", "complete"]}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <TrackingCard item={item} />}
-          showsVerticalScrollIndicator={false}
-          style={{ flex: 1, marginTop: 20 }}
-        />
-
+      {state?.length === 0 && loading === false ? (
+          <Nodata message="No Orders Exist" />
+        ) : (
+          <FlatList
+            style={{ flex: 1, marginTop: 20 }}
+            data={state}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => <TrackingCard item={item} />}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            refreshing={loading}
+            onRefresh={() => {
+              setCurrent(1);
+              setHasMore(true);
+              fetchRecords();
+            }}
+          />
+        )}
         {isVisible && (
           <FilterModal
             isVisible={isVisible}
@@ -78,6 +151,9 @@ const payments = () => {
             setFilter={setFilter}
             filter={filter}
             data={StatusData}
+            fetchRecords={fetchRecords}
+            on={on}
+            setOn={setOn}
           />
         )}
       </View>
@@ -88,75 +164,81 @@ const payments = () => {
 export default payments;
 
 export const TrackingCard: React.FC<any> = ({ item }) => {
+  let amount = 0;
+
+  for (const p of item?.payments) {
+    amount = amount + p.paymentAmount;
+  }
+
+  const router = useRouter();
+  const dispatch = useDispatch();
   return (
     <View style={OrderStyle.card}>
-      <View style={OrderStyle.top}>
-        <View style={OrderStyle.bar}>
-          <Text style={OrderStyle.h1} numberOfLines={1} ellipsizeMode="tail">
-            Chocolate Cake Near boby guest house lalganj raebra
-          </Text>
-          <Text style={OrderStyle.date}>12 Jun Wed 12:00 AM</Text>
-        </View>
-        <Image
-          style={OrderStyle.img}
-          source={p1}
-          contentFit="cover"
-        />
-      </View>
-      <View style={OrderStyle.address}>
-        <View style={OrderStyle.pin}>
-          <Ionicons name="storefront-outline" size={15} color={primary} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={OrderStyle.p} numberOfLines={2} ellipsizeMode="tail">
-            Near boby guest house lalganj raebralei 229206 Near boby guest
+      <View style={OrderStyle.payment_card_top}>
+        <View>
+          <Text style={OrderStyle.payment_card_text}>Invoice Date</Text>
+          <Text style={OrderStyle.payment_card_date}>
+            {new Date(item?.date).toDateString()}
           </Text>
         </View>
-      </View>
-      <View style={{ ...OrderStyle.address, marginTop: 30 }}>
-        <View style={OrderStyle.pin2}>
-          <Feather name="map-pin" size={15} color={primary} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={OrderStyle.p} numberOfLines={2} ellipsizeMode="tail">
-            Near boby guest house lalganj raebralei 229206
-          </Text>
-        </View>
-      </View>
-      <View style={OrderStyle.line}></View>
-      <View style={OrderStyle.last}>
-        <View style={OrderStyle.wrapText}>
-          <MaterialIcons name="currency-rupee" size={15} color={primary} />
-          <Text style={OrderStyle.ptext}>200</Text>
-        </View>
-        <View
-          style={
-            item === "complete"
-              ? OrderStyle.complete
-              : item === "cancel"
-              ? OrderStyle.cancel
-              : OrderStyle.rto
-          }
+        <TouchableOpacity
+          style={OrderStyle.payment_card_icon}
+          onPress={() => {
+            router.push("/(external)/payment_details");
+            dispatch({ type: "addPayment", payload: item });
+          }}
         >
-          <Text
-            style={
-              item === "complete"
-                ? OrderStyle.completeText
-                : item === "cancel"
-                ? OrderStyle.cancelText
-                : OrderStyle.rtoText
-            }
+          <Entypo name="chevron-right" size={16} color="#67b8fb" />
+        </TouchableOpacity>
+      </View>
+      <View style={OrderStyle.payment_card_line}>
+        <View>
+          <Text style={OrderStyle.payment_card_text}>Payment Records</Text>
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              marginTop: 6,
+            }}
           >
-            {item === "complete"
-              ? "Complete"
-              : item === "cancel"
-              ? "Cancel"
-              : "RTO"}
-          </Text>
+            <View>
+              <MaterialCommunityIcons
+                name="lightning-bolt"
+                size={24}
+                color={primary}
+              />
+            </View>
+            <Text>{item?.payments?.length}</Text>
+          </View>
         </View>
-        <View style={{ ...OrderStyle.wrapText, gap: 5 }}>
-          <Text style={OrderStyle.ptext}>See More</Text>
-          <AntDesign name="arrowright" size={14} color={primary} />
+
+        <View>
+          <Text style={OrderStyle.payment_card_text}>Amount</Text>
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              marginTop: 6,
+            }}
+          >
+            <FontAwesome5
+              name="money-bill-wave-alt"
+              size={16}
+              color="#4db453"
+            />
+            <Text
+              style={{
+                fontWeight: "600",
+                fontFamily: "bold",
+                fontSize: 14,
+                marginLeft: 5,
+              }}
+            >
+              {amount}{" "}
+            </Text>
+          </View>
         </View>
       </View>
     </View>
