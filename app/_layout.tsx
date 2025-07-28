@@ -33,7 +33,7 @@ export default function RootLayout() {
     <ErrorBoundary>
       <Provider store={store}>
         <Slot />
-        <StatusBar style={"dark"} />
+        <StatusBar style={"light"} />
         <Toast position="top" />
       </Provider>
     </ErrorBoundary>

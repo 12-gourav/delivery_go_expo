@@ -130,7 +130,7 @@ export default function ProfileScreen() {
               style={ProfileStyles.utils}
               onPress={() =>
                 Linking.openURL(
-                  "https://www.termsfeed.com/live/4ef01c03-12b4-40e1-835f-ee8cdeb51b36"
+                  "https://legalterms.onrender.com/bakersline/bakerslinego/terms_condition"
                 )
               }
             >

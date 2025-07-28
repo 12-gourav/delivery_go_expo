@@ -60,17 +60,17 @@ const DetailStyle = StyleSheet.create({
         fontWeight: "400",
         includeFontPadding: false,
         textAlignVertical: "center",
-        marginTop:5
+        marginTop: 5
 
     },
-        label2Active: {
+    label2Active: {
         fontSize: 14,
         color: "#fff",
         fontFamily: "regular",
         fontWeight: "400",
         includeFontPadding: false,
         textAlignVertical: "center",
-        marginTop:5
+        marginTop: 5
 
     },
     wrapText: {
@@ -145,7 +145,7 @@ const DetailStyle = StyleSheet.create({
     totalText: {
         fontFamily: "bold",
         fontWeight: '500',
-        fontSize: 14
+        fontSize: 14,
     }, sm: {
         fontSize: 12,
         color: "#989898",
@@ -193,25 +193,52 @@ const DetailStyle = StyleSheet.create({
         fontWeight: '500',
         fontSize: 15,
         fontFamily: 'bold',
-        marginBottom:5
+        marginBottom: 5
     },
-    titleActive:{
-          color: "#fff",
+    titleActive: {
+        color: "#fff",
         fontWeight: '500',
         fontSize: 15,
         fontFamily: 'bold',
-         marginBottom:5
+        marginBottom: 5
     },
-    
-    statusCardActive:{
-         width: "100%",
+
+    statusCardActive: {
+        width: "100%",
         borderWidth: 1,
         padding: 10,
         borderRadius: 5,
         borderColor: primary,
         marginBottom: 15,
-        backgroundColor:"#002143"
-    }
+        backgroundColor: "#002143"
+    },
+    note: {
+        width: "100%",
+        backgroundColor: "#f3e8ff",
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 15
+    }, nh: {
+        color: "#7008e7",
+        fontFamily: "bold",
+        marginBottom: 5
+    },
+    np: {
+        color: "#484848",
+        textAlign: "justify",
+        lineHeight: 18
+    },
+        label3: {
+        fontSize: 14,
+        color: primary,
+        fontFamily: "bold",
+        fontWeight: "400",
+        includeFontPadding: false,
+        textAlignVertical: "center",
+        marginTop: 5,
+        textTransform: "capitalize"
+
+    },
 
 
 })

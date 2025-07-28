@@ -53,7 +53,7 @@ const Login = () => {
           text1: "Login Successful",
           text2: "Welcome back!",
         });
-        router.replace("/(tabs)/home");
+        router.push("/(tabs)/home");
       }
     } catch (error) {
       console.error("Login failed", error);
@@ -64,7 +64,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isValid) {
-      router.replace("/(tabs)/home");
+      router.push("/(tabs)/home");
     }
   }, [isValid]);
 

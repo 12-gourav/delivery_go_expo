@@ -24,7 +24,7 @@ const Forgot = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    router.replace("/(auth)/login")
+    router.push("/(auth)/login")
   };
 
   return (

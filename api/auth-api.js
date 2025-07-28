@@ -14,7 +14,6 @@ const ErrorMsg = (e) => {
 
 export const RegisterAPI = async (myform) => {
   try {
-    console.log(myform)
     return await axios.post(url + "/register/agent", myform, {
       headers: {
         "Content-Type": "multipart/form-data",

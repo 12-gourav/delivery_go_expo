@@ -1,8 +1,27 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { View, Text, ScrollView, StyleSheet, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Faq = () => {
+    const router = useRouter()
+  
+  
+      useEffect(() => {
+      const backAction = () => {
+       
+        router.push("/(tabs)/profile"); 
+        return true;
+      };
+  
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+  
+      return () => backHandler.remove();
+    }, []);
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>

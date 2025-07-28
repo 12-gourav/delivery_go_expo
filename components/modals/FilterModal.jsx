@@ -24,11 +24,14 @@ const FilterModal = ({
   setFilter,
   filter,
   data,
+  fetchRecords,
+  on,
+  setOn
 }) => {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
 
-  const handleReset = () => {
+  const handleReset = async () => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
@@ -36,7 +39,30 @@ const FilterModal = ({
     setEnd(now);
     setStatus("");
     setFilter({ start: "", end: "", status: "" });
+    setIsVisible(false);
+    setOn(false)
+    await fetchRecords();
   };
+
+  const apply = async () => {
+    const newFilter = {
+      status,
+      start: on ? start : "",
+      end: on ? end : "",
+    };
+    setFilter(newFilter);
+    setIsVisible(false);
+    await fetchRecords();
+  };
+
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (on) count += 1;
+    if (status) count += 1;
+    return count > 0 ? `(${count})` : "";
+  };
+
+  console.log(filter)
 
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -46,6 +72,7 @@ const FilterModal = ({
             <View style={ModalStyle.heading}>
               <Text style={ModalStyle.headingText}>Filters</Text>
             </View>
+
             <View style={ModalStyle.form}>
               <Text style={ModalStyle.formText}>Date Range</Text>
               <View style={ModalStyle.group}>
@@ -65,12 +92,13 @@ const FilterModal = ({
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={ModalStyle.form}>
               <Text style={ModalStyle.formText}>Payment Status</Text>
               <View style={ModalStyle.tabs}>
                 {data?.map((z) => (
                   <TouchableOpacity
-                  key={z}
+                    key={z}
                     style={
                       status === z
                         ? ModalStyle.tabItemActive
@@ -78,7 +106,6 @@ const FilterModal = ({
                     }
                     onPress={() => {
                       setStatus(status === z ? "" : z);
-                      setFilter({ ...filter, status: status });
                     }}
                   >
                     <Text
@@ -94,18 +121,13 @@ const FilterModal = ({
                 ))}
               </View>
             </View>
+
             <TouchableOpacity style={ModalStyle.clear} onPress={handleReset}>
               <Text style={ModalStyle.clearText}>Clear All</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={ModalStyle.apply}>
-              <Text style={ModalStyle.applyText}>
-                Apply{" "}
-                {filter?.start && filter?.end && status
-                  ? "(2)"
-                  : (filter?.start && filter?.end) || status
-                  ? "(1)"
-                  : ""}
-              </Text>
+
+            <TouchableOpacity style={ModalStyle.apply} onPress={apply}>
+              <Text style={ModalStyle.applyText}>Apply {getActiveFilterCount()}</Text>
             </TouchableOpacity>
 
             {open && (
@@ -114,21 +136,26 @@ const FilterModal = ({
                 mode="date"
                 display={Platform.OS === "ios" ? "spinner" : "default"}
                 onChange={(e, selectedDate) => {
-                  setStart(selectedDate);
+                  if (selectedDate) {
+                    setStart(selectedDate);
+                    setOn(true);
+                  }
                   setOpen(false);
-                  setFilter({ ...filter, start: start });
                 }}
               />
             )}
+
             {open2 && (
               <DateTimePicker
                 value={new Date(end)}
                 mode="date"
                 display={Platform.OS === "ios" ? "spinner" : "default"}
                 onChange={(e, selectedDate) => {
-                  setEnd(selectedDate);
+                  if (selectedDate) {
+                    setEnd(selectedDate);
+                    setOn(true);
+                  }
                   setOpen2(false);
-                  setFilter({ ...filter, end: end });
                 }}
               />
             )}

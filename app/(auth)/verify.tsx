@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthStyles from "@/styles/auth";
@@ -40,18 +41,16 @@ const Verify = () => {
         });
       }
 
-
       setLoading(true);
 
       const result = await VerifyUserAPI(emailText, otp);
       if (result?.data?.data) {
-        Toast.show({
-          type: "success",
-          text1: "Account Registered Successfully",
-          text2:
-            "Your account is under verification. You will receive an email once it is activated. You can then log in using your registered credentials.",
-        });
-        router.replace("/(auth)/login");
+        Alert.alert(
+          "Account Registered Successfully", // Title
+          "Your account is under verification. You will receive an email once it is activated. You can then log in using your registered credentials.", // Message
+          [{ text: "OK", onPress: () => router.push("/(auth)/login") }],
+          { cancelable: false }
+        );
       }
     } catch (error) {
       console.log(error);
@@ -59,7 +58,6 @@ const Verify = () => {
       setLoading(false);
     }
   };
-
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

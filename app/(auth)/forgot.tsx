@@ -7,22 +7,49 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthStyles from "@/styles/auth";
 import { Image } from "expo-image";
-import lockImage from "../../assets/images/lock.png"
-
+import lockImage from "../../assets/images/lock.png";
+import Toast from "react-native-toast-message";
+import { ForgotAPI } from "@/api/auth-api";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
-
-
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const handleLogin = async () => {
-   router.push("/(auth)/forgot_verify")
+  const handleForgot = async () => {
+    try {
+      if (email === "")
+        return Toast.show({
+          type: "error",
+          text1: "Email is required",
+          text2: "Please enter your email address",
+        });
+      setLoading(true);
+
+      const result = await ForgotAPI(email);
+      if (result?.data?.data) {
+        Alert.alert(
+          "OTP Sent",
+          "Your email has been sent an OTP to set your password. If you don't find it, please check your inbox and spam folder.",
+          [{ text: "OK" }],
+          { cancelable: false }
+        );
+        router.push({
+          pathname: "/(auth)/forgot_verify",
+          params: { emailText: email, from: "forgot" },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,7 +77,7 @@ const Forgot = () => {
           >
             <Image
               source={lockImage}
-              style={{ width: 150, height: 150, }}
+              style={{ width: 150, height: 150 }}
               contentFit="contain"
             />
           </View>
@@ -69,7 +96,7 @@ const Forgot = () => {
             Back to login page?
           </Link>
 
-          <TouchableOpacity onPress={handleLogin}>
+          <TouchableOpacity onPress={handleForgot}>
             <View style={AuthStyles.login}>
               <Text style={AuthStyles.textActive}>Submit</Text>
             </View>

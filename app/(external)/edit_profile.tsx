@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { LoadUserAPI, UserUpdateAPI } from "../../api/auth-api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 const edit_profile = () => {
   const { user } = useSelector((state: any) => state.user);
@@ -20,6 +22,7 @@ const edit_profile = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const dispatch = useDispatch();
 
@@ -82,6 +85,20 @@ const edit_profile = () => {
       setAddress(user?.address);
     }
   }, [user]);
+
+  useEffect(() => {
+    const backAction = () => {
+      router.push("/(tabs)/profile");
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
