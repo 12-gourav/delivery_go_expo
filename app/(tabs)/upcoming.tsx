@@ -26,7 +26,6 @@ const upcoming = () => {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
       const result = await upcomingOrdersAPI(token);
-      console.log(result);
       if (result?.data?.data) {
         setState(result?.data?.data);
       }

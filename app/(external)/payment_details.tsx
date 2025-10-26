@@ -1,15 +1,36 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, BackHandler } from "react-native";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import OrderStyle from "@/styles/order";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { primary } from "@/constants/Colors";
 import { useSelector } from "react-redux";
-import { useRouter } from "expo-router";
+import {  useRouter } from "expo-router";
 
 const payment_details = () => {
   const { payment } = useSelector((state: any) => state.payment);
+const router = useRouter()
+
+
+  useEffect(() => {
+    const backAction = () => {
+      router.push("/(tabs)/payments");
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+
+
+
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fafafa" }}>

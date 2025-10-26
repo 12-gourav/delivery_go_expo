@@ -1,7 +1,9 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
 
-const url = "https://bakersline-backend.onrender.com/api/v1";
+// const url = "https://bakersline-backend.onrender.com/api/v1"
+const url = "https://www.api.bakersline.in/api/v1";
+
 
 const ErrorMsg = (e) => {
   console.log(e);
@@ -90,6 +92,7 @@ export const GetPaymentsDetails = async (
   token
 ) => {
   try {
+    console.log("ffff",query)
     return await axios.get(url + "/agent/payments", {
       params: {
         page: current,
@@ -102,6 +105,17 @@ export const GetPaymentsDetails = async (
         token,
       },
     });
+  } catch (error) {
+    console.log(error);
+    ErrorMsg(error);
+  }
+};
+
+
+
+export const GetOrigins = async () => {
+  try {
+    return await axios.post(url + "/full/origins");
   } catch (error) {
     console.log(error);
     ErrorMsg(error);

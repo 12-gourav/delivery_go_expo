@@ -147,7 +147,8 @@ const AuthStyles = StyleSheet.create({
         display:"flex",
         alignItems:"center",
         justifyContent:"center",
-        gap:10
+        gap:10,
+        backgroundColor:"#fff"
     },
     uploaderText:{
        fontFamily: "regular",
@@ -159,8 +160,56 @@ const AuthStyles = StyleSheet.create({
     },
     icon:{
         color:"#002143"
-    }
+    },
+    tags: {
+        width: "100%",
+        backgroundColor: "#fff",
+        maxHeight: 270,
+        borderRadius: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 5,
+        minHeight: 100,
+        paddingBottom: 10, overflow: "hidden"
 
+    },
+    tagInput: {
+        width: '100%',
+        height: 40
+    },
+    tagOption: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        borderRadius: 5,
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    tagOption2: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: "#FDF3E7",
+        borderRadius: 5,
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+        texts: {
+        marginLeft: 10
+    },
+    textp1: {
+        fontFamily: "bold",
+        fontSize: 12,
+        color: "#8E8E8E"
+    }
 
 });
 

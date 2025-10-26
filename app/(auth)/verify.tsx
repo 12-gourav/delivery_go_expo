@@ -111,11 +111,9 @@ const Verify = () => {
 
           <TouchableOpacity onPress={handleVerify} disabled={loading}>
             <View style={AuthStyles.login}>
-              {loading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={AuthStyles.textActive}>Submit</Text>
-              )}
+              <Text style={AuthStyles.textActive}>
+                {loading ? <ActivityIndicator /> : "Submit"}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>

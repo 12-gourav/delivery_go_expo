@@ -111,6 +111,7 @@ const order = () => {
           setQuery={setQuery}
           setIsvisible={setIsvisible}
           handleSearch={handleSearch}
+          placeholder="Search by product name"
         />
 
         <View style={OrderStyle.filters}>
@@ -164,7 +165,7 @@ const order = () => {
             setFilter={setFilter}
             filter={filter}
             data={StatusData}
-            fetchRecords={fetchRecords}
+            fetchRecords={handleSearch}
             on={on}
             setOn={setOn}
           />

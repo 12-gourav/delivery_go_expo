@@ -129,11 +129,9 @@ const Login = () => {
           </Link>
           <TouchableOpacity onPress={handleLogin} disabled={loading}>
             <View style={AuthStyles.login}>
-              {loading ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={AuthStyles.textActive}>Login</Text>
-              )}
+          
+                <Text style={AuthStyles.textActive}>{loading ? <ActivityIndicator/>:"Login"}</Text>
+          
             </View>
           </TouchableOpacity>
         </View>

@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthStyles from "@/styles/auth";
@@ -96,9 +97,9 @@ const Forgot = () => {
             Back to login page?
           </Link>
 
-          <TouchableOpacity onPress={handleForgot}>
+          <TouchableOpacity onPress={handleForgot} disabled={loading}>
             <View style={AuthStyles.login}>
-              <Text style={AuthStyles.textActive}>Submit</Text>
+              <Text style={AuthStyles.textActive}>{loading ? <ActivityIndicator/> :"Submit"}</Text>
             </View>
           </TouchableOpacity>
         </View>

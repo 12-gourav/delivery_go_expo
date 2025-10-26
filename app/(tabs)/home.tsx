@@ -10,12 +10,12 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import Zocial from "@expo/vector-icons/Zocial";
 
 import { Image } from "expo-image";
-import DashboardChart from "@/components/DashboardChart";
 import p1 from "../../assets/images/p1.jpg";
 import { ErrorBoundary } from "@/components/ErrorBoundry";
 import * as Speech from "expo-speech";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
+import img1 from "../../assets/images/banner2.jpg" 
 
 const Home = () => {
   const { user } = useSelector((state: any) => state.user);
@@ -66,6 +66,10 @@ const Home = () => {
                 and start delivering happiness — fresh, fast, and with care.
               </Text>
             </View>
+            <View>
+              <Image source={img1} style={{width:"100%",height:160,resizeMode:"cover",borderRadius:10}}/>
+            </View>
+
             <Text style={HomeStyles.overview}>Overview</Text>
             <View style={HomeStyles.boxwrap}>
               <View style={HomeStyles.box}>

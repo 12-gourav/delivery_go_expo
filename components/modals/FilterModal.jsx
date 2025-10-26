@@ -62,7 +62,6 @@ const FilterModal = ({
     return count > 0 ? `(${count})` : "";
   };
 
-  console.log(filter)
 
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
